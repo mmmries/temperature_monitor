@@ -8,7 +8,7 @@ defmodule TemperatureMonitor.Supervisor do
   end
 
   def start_workers(sup, filelist) do
-    {:ok, stash} = Supervisor.start_child(sup, worker(TemperatureMonitor.Stash, [filelist])) |> IO.inspect
+    {:ok, stash} = Supervisor.start_child(sup, worker(TemperatureMonitor.Stash, [])) |> IO.inspect
     Supervisor.start_child(sup, supervisor(TemperatureMonitor.SubSupervisor, [stash])) |> IO.inspect
   end
 
