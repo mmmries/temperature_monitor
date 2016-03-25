@@ -1,23 +1,23 @@
 defmodule TemperatureMonitor.Stash do
   use GenServer
 
-  def start_link(filelist) do
-    {:ok, _pid} = GenServer.start_link(__MODULE__, filelist)
+  def start_link do
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
-  def save_value(pid, value) do
-    GenServer.cast pid, {:save_value, value}
+  def save_value(pid \\ __MODULE__, serial_number, value) do
+    GenServer.cast pid, {:save_value, serial_number, value}
   end
 
-  def get_value(pid) do
+  def get_value(pid \\ __MODULE__) do
     GenServer.call pid, :get_value
   end
 
-  def handle_call(:get_value, _from, filelist) do
-    {:reply, filelist, filelist}
+  def handle_call(:get_value, _from, values) do
+    {:reply, values, values}
   end
 
-  def handle_cast({:save_value, value}, _filelist) do
-    {:noreply, value}
+  def handle_cast({:save_value, serial_number, value}, values) do
+    {:noreply, Map.put(values, serial_number, value)}
   end
 end
